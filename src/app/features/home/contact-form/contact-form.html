@@ -64,7 +64,12 @@
                     {{{ mensajes.servicio }}}</div>
             </div>
             <div class="field"><label for="ubicacion">Comuna de la obra (opcional)</label><input id="ubicacion"
-                    formControlName="ubicacion" type="text" autocomplete="off" placeholder="Ej.: Talca…"></div>
+                    formControlName="ubicacion" type="text" autocomplete="off" placeholder="Ej.: Talca…"
+                    [attr.aria-invalid]="form.controls.ubicacion.invalid && form.controls.ubicacion.touched"
+                    aria-describedby="e-ubicacion">
+                <div class="err" id="e-ubicacion">@if (form.controls.ubicacion.invalid && form.controls.ubicacion.touched)
+                    {{{ mensajes.ubicacion }}}</div>
+            </div>
             <div class="field"><label for="mensaje">Detalle del proyecto</label><textarea id="mensaje"
                     formControlName="mensaje" autocomplete="off"
                     placeholder="Ej.: Quiero ampliar mi casa en 40 m² y renovar el baño…" required

@@ -1,19 +1,30 @@
-import nodemailer, { Transporter } from 'nodemailer';
-import { ContactoSolicitud } from '../app/core/models/contacto.model';
+import nodemailer from 'nodemailer';
+import type { ContactoSolicitud } from '../app/core/models/contacto.model';
 
-let transporter: Transporter | undefined;
+export interface ContactMailConfig {
+  smtpHost?: string;
+  smtpPort?: string;
+  smtpUser?: string;
+  smtpPass?: string;
+  smtpFrom?: string;
+  contactEmail?: string;
+}
 
-function createTransporter(): Transporter {
-  const host = process.env['SMTP_HOST'];
-  const port = Number(process.env['SMTP_PORT'] ?? 587);
-  const user = process.env['SMTP_USER'];
-  const pass = process.env['SMTP_PASS'];
+export async function sendContactEmail(solicitud: ContactoSolicitud, config: ContactMailConfig): Promise<void> {
+  const host = config.smtpHost;
+  const port = Number(config.smtpPort ?? 587);
+  const user = config.smtpUser;
+  const pass = config.smtpPass;
+  const recipient = config.contactEmail;
 
   if (!host || !user || !pass || !Number.isInteger(port) || port < 1 || port > 65535) {
     throw new Error('SMTP configuration is incomplete.');
   }
+  if (!recipient) {
+    throw new Error('CONTACT_EMAIL is not configured.');
+  }
 
-  return nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     host,
     port,
     secure: port === 465,
@@ -22,22 +33,8 @@ function createTransporter(): Transporter {
     greetingTimeout: 10_000,
     socketTimeout: 20_000
   });
-}
 
-function escapeHtml(value: string): string {
-  return value.replace(/[&<>"']/g, (character) => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-  })[character]!);
-}
-
-export async function sendContactEmail(solicitud: ContactoSolicitud): Promise<void> {
-  const recipient = process.env['CONTACT_EMAIL'];
-  if (!recipient) {
-    throw new Error('CONTACT_EMAIL is not configured.');
-  }
-
-  transporter ??= createTransporter();
-  const sender = process.env['SMTP_FROM'] || process.env['SMTP_USER'];
+  const sender = config.smtpFrom || user;
   const location = solicitud.ubicacion?.trim() || 'No indicada';
   const text = [
     'Nueva solicitud de cotización',
@@ -61,4 +58,10 @@ export async function sendContactEmail(solicitud: ContactoSolicitud): Promise<vo
     text,
     html
   });
+}
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[character]!);
 }

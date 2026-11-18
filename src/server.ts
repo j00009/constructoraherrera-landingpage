@@ -68,7 +68,14 @@ app.post('/api/contacto', async (req, res) => {
 
   const solicitud: ContactoSolicitud = { nombre, correo, telefono, servicio, ubicacion, mensaje };
   try {
-    await sendContactEmail(solicitud);
+    await sendContactEmail(solicitud, {
+      smtpHost: process.env['SMTP_HOST'],
+      smtpPort: process.env['SMTP_PORT'],
+      smtpUser: process.env['SMTP_USER'],
+      smtpPass: process.env['SMTP_PASS'],
+      smtpFrom: process.env['SMTP_FROM'],
+      contactEmail: process.env['CONTACT_EMAIL']
+    });
     res.status(201).json({ message: 'Solicitud enviada correctamente.' });
   } catch (error) {
     const mailError = error as { code?: unknown; responseCode?: unknown; command?: unknown };

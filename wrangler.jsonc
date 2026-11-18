@@ -2,12 +2,15 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "constructoraherrera-landingpage",
+  "main": "./src/worker.ts",
   "compatibility_date": "2026-11-17",
   "observability": {
     "enabled": true
   },
   "assets": {
     "directory": "./dist/constructoralp/browser",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"],
     "not_found_handling": "single-page-application"
   }
 }
