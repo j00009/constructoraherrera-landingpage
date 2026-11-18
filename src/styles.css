@@ -1,1 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
+
+:root{
+  --paper:#f1f2f0; --card:#ffffff; --ink:#20262b; --muted:#566068; --line:#cdd1d0;
+  --concrete:#2a3036; --orange:#e8590c; --orange-ink:#ffffff;
+  --head:"Archivo","Arial Black",Arial,sans-serif; --body:"Source Serif 4",Georgia,serif;
+  box-sizing:border-box; color-scheme:light;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#171b1f;--card:#20262b;--ink:#eceeed;--muted:#a5aeb4;--line:#343c43;--concrete:#0f1215;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#171b1f;--card:#20262b;--ink:#eceeed;--muted:#a5aeb4;--line:#343c43;--concrete:#0f1215;color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth;scroll-padding-top:calc(76px + env(safe-area-inset-top,0px))}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:1.1rem;line-height:1.65}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+.skip{position:absolute;left:1rem;top:-4rem;z-index:50;background:var(--orange);color:var(--orange-ink);padding:.6rem 1rem;font-family:var(--head);font-weight:700;text-decoration:none}
+.skip:focus{top:calc(.5rem + env(safe-area-inset-top,0px))}
+a,button{touch-action:manipulation}

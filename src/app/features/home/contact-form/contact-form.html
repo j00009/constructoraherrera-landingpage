@@ -1,0 +1,81 @@
+<section class="contact" id="contacto" aria-labelledby="t-contacto">
+    <div class="contact-in">
+        <div class="contact-info">
+            <h2 id="t-contacto">Cuéntenos qué necesita y le enviamos una cotización</h2>
+            <p>Complete el formulario con los datos de su obra. Le respondemos en un máximo de 48&nbsp;horas hábiles,
+                sin costo ni compromiso.</p>
+            <dl class="datos">
+                <div>
+                    <dt>Teléfono</dt>
+                    <dd><a [href]="'tel:' + empresa().telefono">{{ empresa().telefonoVisible }}</a></dd>
+                </div>
+                <div>
+                    <dt>Correo</dt>
+                    <dd><a [href]="'mailto:' + empresa().correo">{{ empresa().correo }}</a></dd>
+                </div>
+                <div>
+                    <dt>Horario de atención</dt>
+                    <dd>{{ empresa().horario }}</dd>
+                </div>
+                <div>
+                    <dt>Cobertura</dt>
+                    <dd>{{ empresa().cobertura }}</dd>
+                </div>
+            </dl>
+        </div>
+        <form class="form" id="cot" [formGroup]="form" novalidate (ngSubmit)="submit()">
+            <h3>Solicitar cotización</h3>
+            <div class="field"><label for="nombre">Nombre completo</label><input id="nombre" formControlName="nombre"
+                    type="text" autocomplete="name" placeholder="Ej.: María González…" required
+                    [attr.aria-invalid]="form.controls.nombre.invalid && form.controls.nombre.touched"
+                    aria-describedby="e-nombre">
+                <div class="err" id="e-nombre">@if (form.controls.nombre.invalid && form.controls.nombre.touched) {{{
+                    mensajes.nombre }}}</div>
+            </div>
+            <div class="f2">
+                <div class="field"><label for="correo">Correo electrónico</label><input id="correo"
+                        formControlName="correo" type="email" autocomplete="email" spellcheck="false"
+                        placeholder="nombre@correo.cl…" required
+                        [attr.aria-invalid]="form.controls.correo.invalid && form.controls.correo.touched"
+                        aria-describedby="e-correo">
+                    <div class="err" id="e-correo">@if (form.controls.correo.invalid && form.controls.correo.touched)
+                        {{{ mensajes.correo }}}</div>
+                </div>
+                <div class="field"><label for="telefono">Teléfono</label><input id="telefono" formControlName="telefono"
+                        type="tel" inputmode="tel" autocomplete="tel" placeholder="+56 9 1234 5678…" required
+                        [attr.aria-invalid]="form.controls.telefono.invalid && form.controls.telefono.touched"
+                        aria-describedby="e-telefono">
+                    <div class="err" id="e-telefono">@if (form.controls.telefono.invalid &&
+                        form.controls.telefono.touched) {{{ mensajes.telefono }}}</div>
+                </div>
+            </div>
+            <div class="field"><label for="servicio">Tipo de trabajo</label><select id="servicio"
+                    formControlName="servicio" required
+                    [attr.aria-invalid]="form.controls.servicio.invalid && form.controls.servicio.touched"
+                    aria-describedby="e-servicio">
+                    <option value="">Seleccione una opción</option>
+                    <option>Obra gruesa</option>
+                    <option>Remodelación</option>
+                    <option>Ampliación</option>
+                    <option>Terminaciones</option>
+                    <option>Otro</option>
+                </select>
+                <div class="err" id="e-servicio">@if (form.controls.servicio.invalid && form.controls.servicio.touched)
+                    {{{ mensajes.servicio }}}</div>
+            </div>
+            <div class="field"><label for="ubicacion">Comuna de la obra (opcional)</label><input id="ubicacion"
+                    formControlName="ubicacion" type="text" autocomplete="off" placeholder="Ej.: Talca…"></div>
+            <div class="field"><label for="mensaje">Detalle del proyecto</label><textarea id="mensaje"
+                    formControlName="mensaje" autocomplete="off"
+                    placeholder="Ej.: Quiero ampliar mi casa en 40 m² y renovar el baño…" required
+                    [attr.aria-invalid]="form.controls.mensaje.invalid && form.controls.mensaje.touched"
+                    aria-describedby="e-mensaje"></textarea>
+                <div class="err" id="e-mensaje">@if (form.controls.mensaje.invalid && form.controls.mensaje.touched) {{{
+                    mensajes.mensaje }}}</div>
+            </div>
+            <button class="btn" type="submit" [disabled]="enviando()">{{ enviando() ? 'Enviando…' : 'Enviar solicitud'
+                }}</button>
+            <p class="estado" role="status" aria-live="polite">{{ estado() }}</p>
+        </form>
+    </div>
+</section>

@@ -1,0 +1,20 @@
+<footer>
+  <div class="foot">
+    <div class="fb">
+      <a class="flogo" href="#inicio" aria-label="Constructora Herrera, volver al inicio"><app-icon name="logo" /><span translate="no">{{ empresa().nombre }}</span></a>
+      <p>Empresa chilena de construcción: obra gruesa, remodelaciones y terminaciones para particulares y empresas.</p>
+      <ul class="soc">
+        <li><a [href]="empresa().redes.whatsapp" target="_blank" rel="noopener" aria-label="WhatsApp"><app-icon name="whatsapp" /></a></li>
+        <li><a [href]="empresa().redes.facebook" target="_blank" rel="noopener" aria-label="Facebook"><app-icon name="facebook" /></a></li>
+        <li><a [href]="'mailto:' + empresa().correo" aria-label="Correo electrónico"><app-icon name="email" /></a></li>
+      </ul>
+    </div>
+    <nav aria-label="Enlaces del pie de página">
+      <h2 class="fh">Navegación</h2>
+      <ul class="flist"><li><a href="#inicio">Inicio</a></li><li><a href="#nosotros">Nosotros</a></li><li><a href="#servicios">Servicios</a></li><li><a href="#proyectos">Proyectos realizados</a></li><li><a href="#contacto">Contacto</a></li></ul>
+    </nav>
+    <div><h2 class="fh">Servicios</h2><ul class="flist"><li><a href="#servicios">Obra gruesa</a></li><li><a href="#servicios">Remodelaciones</a></li><li><a href="#servicios">Ampliaciones</a></li><li><a href="#servicios">Terminaciones</a></li></ul></div>
+    <div><h2 class="fh">Contacto</h2><address><a [href]="'tel:' + empresa().telefono">{{ empresa().telefonoVisible }}</a><a [href]="'mailto:' + empresa().correo">{{ empresa().correo }}</a><span>{{ empresa().horario }}</span><span>{{ empresa().cobertura }}</span></address></div>
+  </div>
+  <div class="legal"><div class="legal-in"><span>© {{ year }} <span translate="no">{{ empresa().nombre }}</span>. Todos los derechos reservados.</span><a href="#inicio">Volver arriba</a></div></div>
+</footer>

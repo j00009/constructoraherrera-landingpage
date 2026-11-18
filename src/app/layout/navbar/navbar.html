@@ -1,0 +1,17 @@
+<header class="nav">
+  <div class="nav-in">
+    <a class="logo" href="#inicio" aria-label="Constructora Herrera, inicio">
+      <app-icon name="logo" />
+      <span translate="no">{{ empresa().nombre }}<small>{{ empresa().eslogan }}</small></span>
+    </a>
+    <button class="burger" type="button" [attr.aria-expanded]="menuOpen()" aria-controls="menu" (click)="toggleMenu()">Menú</button>
+    <ul class="menu" id="menu" [class.open]="menuOpen()">
+      <li><a href="#inicio" (click)="closeMenu()">Inicio</a></li>
+      <li><a href="#nosotros" (click)="closeMenu()">Nosotros</a></li>
+      <li><a href="#servicios" (click)="closeMenu()">Servicios</a></li>
+      <li><a href="#proyectos" (click)="closeMenu()">Proyectos realizados</a></li>
+      <li><a href="#contacto" (click)="closeMenu()">Contacto</a></li>
+      <li><a class="btn" href="#contacto" (click)="closeMenu()">Solicitar cotización</a></li>
+    </ul>
+  </div>
+</header>

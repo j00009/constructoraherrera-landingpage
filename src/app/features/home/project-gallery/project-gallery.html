@@ -1,0 +1,21 @@
+<section class="projects" id="proyectos" aria-labelledby="t-proyectos">
+  <div class="projects-in">
+    <header class="projects-heading">
+      <p class="eyebrow">Nuestro trabajo</p>
+      <h2 id="t-proyectos">Proyectos realizados</h2>
+      <p class="intro">Una muestra de trabajos de construcción, remodelación y terminaciones realizados por nuestro equipo.</p>
+    </header>
+
+    <div class="gallery">
+      @for (proyecto of proyectos; track proyecto.src) {
+        <figure class="project-card">
+          <img [src]="proyecto.src" [alt]="proyecto.alt" loading="lazy" decoding="async">
+          <figcaption>
+            <span class="category">{{ proyecto.categoria }}</span>
+            <span class="description">{{ proyecto.descripcion }}</span>
+          </figcaption>
+        </figure>
+      }
+    </div>
+  </div>
+</section>

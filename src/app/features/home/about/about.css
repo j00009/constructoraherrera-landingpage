@@ -1,0 +1,19 @@
+main{display:block}
+.about{max-width:1240px;margin:0 auto;padding:6rem 1.25rem 5rem;display:grid;grid-template-columns:5fr 6fr;gap:4.5rem;align-items:start}
+.photo{margin:0;position:sticky;top:100px}
+.photo img{display:block;width:100%;height:auto;object-fit:contain;background:var(--concrete)}
+.photo figcaption{margin-top:.75rem;font-size:.9rem;color:var(--muted)}
+.about h2{font-family:var(--head);font-weight:800;font-size:clamp(2rem,4vw,3.2rem);line-height:1.04;letter-spacing:-.025em;margin:0 0 1.5rem;text-wrap:balance}
+.about p{max-width:62ch;margin:0 0 1.1rem;color:var(--muted)}
+.about p.lead{font-size:1.3rem;color:var(--ink);line-height:1.5}
+.vals{display:grid;grid-template-columns:1fr 1fr;margin:2.5rem 0 0;border-top:3px solid var(--ink)}
+.vals div{padding:1.25rem 1.5rem 1.25rem 0;border-bottom:1px solid var(--line)}
+.vals div:nth-child(even){padding:1.25rem 0 1.25rem 1.5rem;border-left:1px solid var(--line)}
+.vals dt{font-family:var(--head);font-weight:700;font-size:1.15rem;margin-bottom:.25rem}
+.vals dd{margin:0;font-size:1rem;color:var(--muted);line-height:1.5}
+@media (max-width:900px){
+  .about{grid-template-columns:1fr;gap:2.5rem;padding:3.5rem 1.25rem}
+  .photo{position:static}
+  .vals{grid-template-columns:1fr}
+  .vals div,.vals div:nth-child(even){padding:1.1rem 0;border-left:0}
+}
