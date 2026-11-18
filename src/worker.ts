@@ -92,11 +92,18 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
     });
     return json('Solicitud enviada correctamente.', 201);
   } catch (error) {
-    const mailError = error as { code?: unknown; responseCode?: unknown; command?: unknown };
+    const mailError = error as { code?: unknown; responseCode?: unknown; command?: unknown; message?: unknown };
     console.error('No se pudo enviar la solicitud de contacto:', {
       code: typeof mailError.code === 'string' ? mailError.code : 'UNKNOWN',
       responseCode: typeof mailError.responseCode === 'number' ? mailError.responseCode : undefined,
-      command: typeof mailError.command === 'string' ? mailError.command : undefined
+      command: typeof mailError.command === 'string' ? mailError.command : undefined,
+      errorMessage: typeof mailError.message === 'string' ? mailError.message.slice(0, 300) : undefined,
+      configured: {
+        SMTP_HOST: Boolean(env.SMTP_HOST),
+        SMTP_USER: Boolean(env.SMTP_USER),
+        SMTP_PASS: Boolean(env.SMTP_PASS),
+        CONTACT_EMAIL: Boolean(env.CONTACT_EMAIL)
+      }
     });
     return json('No fue posible enviar la solicitud. Inténtelo nuevamente más tarde.', 503);
   }
