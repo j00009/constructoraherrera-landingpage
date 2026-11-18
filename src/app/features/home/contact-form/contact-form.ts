@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { EmpresaService } from '../../../core/services/empresa.service';
@@ -35,7 +36,15 @@ export class ContactFormComponent {
         this.enviando.set(true);
         this.contacto.enviar(this.form.getRawValue()).pipe(finalize(() => this.enviando.set(false))).subscribe({
             next: () => { this.enviado.set(true); this.estado.set('Solicitud enviada correctamente.'); this.form.reset(); },
-            error: () => { this.enviado.set(false); this.estado.set('No fue posible enviar la solicitud. Inténtelo nuevamente.'); }
+            error: (error: unknown) => {
+                this.enviado.set(false);
+                const apiMessage = error instanceof HttpErrorResponse
+                    ? (error.error as { message?: unknown } | null)?.message
+                    : undefined;
+                this.estado.set(typeof apiMessage === 'string'
+                    ? apiMessage
+                    : 'No fue posible enviar la solicitud. Inténtelo nuevamente.');
+            }
         });
     }
 

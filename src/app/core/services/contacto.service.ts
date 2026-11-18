@@ -4,11 +4,15 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ContactoSolicitud } from '../models/contacto.model';
 
+export interface ContactoRespuesta {
+  message: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ContactoService {
   private readonly http = inject(HttpClient);
 
-  enviar(solicitud: ContactoSolicitud): Observable<unknown> {
-    return this.http.post(environment.contactoUrl, solicitud);
+  enviar(solicitud: ContactoSolicitud): Observable<ContactoRespuesta> {
+    return this.http.post<ContactoRespuesta>(environment.contactoUrl, solicitud);
   }
 }
