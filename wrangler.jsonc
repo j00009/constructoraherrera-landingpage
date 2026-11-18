@@ -5,6 +5,16 @@
   "main": "./src/worker.ts",
   "keep_vars": true,
   "compatibility_date": "2026-11-17",
+  "vars": {
+    "CONTACT_EMAIL": "joeltroncoso2002@gmail.com",
+    "SMTP_FROM": "Constructora Herrera <joeltroncoso2002@gmail.com>",
+    "SMTP_HOST": "smtp.gmail.com",
+    "SMTP_PORT": "465",
+    "SMTP_USER": "joeltroncoso2002@gmail.com"
+  },
+  "secrets": {
+    "required": ["SMTP_PASS"]
+  },
   "observability": {
     "enabled": true
   },
