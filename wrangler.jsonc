@@ -7,13 +7,10 @@
   "compatibility_date": "2026-11-17",
   "vars": {
     "CONTACT_EMAIL": "joeltroncoso2002@gmail.com",
-    "SMTP_FROM": "Constructora Herrera <joeltroncoso2002@gmail.com>",
-    "SMTP_HOST": "smtp.gmail.com",
-    "SMTP_PORT": "465",
-    "SMTP_USER": "joeltroncoso2002@gmail.com"
+    "RESEND_FROM": "Constructora Herrera <onboarding@resend.dev>"
   },
   "secrets": {
-    "required": ["SMTP_PASS"]
+    "required": ["RESEND_API_KEY"]
   },
   "observability": {
     "enabled": true

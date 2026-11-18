@@ -1,14 +1,10 @@
 import type { ContactoSolicitud } from './app/core/models/contacto.model';
-import { sendContactEmail } from './server/contact-mailer';
 
 interface Env {
   ASSETS: { fetch(request: Request): Promise<Response> };
-  SMTP_HOST?: string;
-  SMTP_PORT?: string;
-  SMTP_USER?: string;
-  SMTP_PASS?: string;
-  SMTP_FROM?: string;
   CONTACT_EMAIL?: string;
+  RESEND_API_KEY?: string;
+  RESEND_FROM?: string;
 }
 
 const allowedServices = new Set(['Obra gruesa', 'Remodelación', 'Ampliación', 'Terminaciones', 'Otro']);
@@ -17,6 +13,56 @@ const MAX_BODY_BYTES = 20 * 1024;
 
 function json(message: string, status: number): Response {
   return Response.json({ message }, { status });
+}
+
+async function sendContactEmail(solicitud: ContactoSolicitud, env: Env): Promise<void> {
+  if (!env.RESEND_API_KEY || !env.CONTACT_EMAIL) {
+    throw Object.assign(new Error('Email API configuration is incomplete.'), { code: 'EMAIL_CONFIG' });
+  }
+
+  const location = solicitud.ubicacion?.trim() || 'No indicada';
+  const text = [
+    'Nueva solicitud de cotización',
+    '',
+    `Nombre: ${solicitud.nombre}`,
+    `Correo: ${solicitud.correo}`,
+    `Teléfono: ${solicitud.telefono}`,
+    `Tipo de trabajo: ${solicitud.servicio}`,
+    `Comuna: ${location}`,
+    '',
+    'Detalle del proyecto:',
+    solicitud.mensaje
+  ].join('\n');
+  const html = `<h2>Nueva solicitud de cotización</h2><dl><dt><strong>Nombre</strong></dt><dd>${escapeHtml(solicitud.nombre)}</dd><dt><strong>Correo</strong></dt><dd>${escapeHtml(solicitud.correo)}</dd><dt><strong>Teléfono</strong></dt><dd>${escapeHtml(solicitud.telefono)}</dd><dt><strong>Tipo de trabajo</strong></dt><dd>${escapeHtml(solicitud.servicio)}</dd><dt><strong>Comuna</strong></dt><dd>${escapeHtml(location)}</dd></dl><h3>Detalle del proyecto</h3><p>${escapeHtml(solicitud.mensaje).replace(/\r?\n/g, '<br>')}</p>`;
+
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${env.RESEND_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      from: env.RESEND_FROM || 'Constructora Herrera <onboarding@resend.dev>',
+      to: [env.CONTACT_EMAIL],
+      reply_to: solicitud.correo,
+      subject: `Solicitud de cotización: ${solicitud.servicio}`,
+      text,
+      html
+    })
+  });
+
+  if (!response.ok) {
+    throw Object.assign(new Error(`Email API returned HTTP ${response.status}.`), {
+      code: `EMAIL_API_${response.status}`,
+      responseCode: response.status
+    });
+  }
+}
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[character]!);
 }
 
 async function handleContact(request: Request, env: Env): Promise<Response> {
@@ -82,14 +128,7 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
 
   const solicitud: ContactoSolicitud = { nombre, correo, telefono, servicio, ubicacion, mensaje };
   try {
-    await sendContactEmail(solicitud, {
-      smtpHost: env.SMTP_HOST,
-      smtpPort: env.SMTP_PORT,
-      smtpUser: env.SMTP_USER,
-      smtpPass: env.SMTP_PASS,
-      smtpFrom: env.SMTP_FROM,
-      contactEmail: env.CONTACT_EMAIL
-    });
+    await sendContactEmail(solicitud, env);
     return json('Solicitud enviada correctamente.', 201);
   } catch (error) {
     const mailError = error as { code?: unknown; responseCode?: unknown; command?: unknown; message?: unknown };
@@ -99,9 +138,7 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
       command: typeof mailError.command === 'string' ? mailError.command : undefined,
       errorMessage: typeof mailError.message === 'string' ? mailError.message.slice(0, 300) : undefined,
       configured: {
-        SMTP_HOST: Boolean(env.SMTP_HOST),
-        SMTP_USER: Boolean(env.SMTP_USER),
-        SMTP_PASS: Boolean(env.SMTP_PASS),
+        RESEND_API_KEY: Boolean(env.RESEND_API_KEY),
         CONTACT_EMAIL: Boolean(env.CONTACT_EMAIL)
       }
     });

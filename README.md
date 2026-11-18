@@ -56,13 +56,13 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 
 ## Contact form email backend
 
-The contact form submits to `POST /api/contacto`. Local SSR runs the Express API, while the Cloudflare Worker entry point in `src/worker.ts` handles the same route in production and serves the Angular build assets.
+The contact form submits to `POST /api/contacto`. Local SSR runs the Express API with Nodemailer/SMTP. The Cloudflare Worker handles the production route and sends mail through Resend's HTTPS API, because Workers cannot connect to the SMTP destination used by this project.
 
-1. Copy `.env.example` to `.env` and set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, and `CONTACT_EMAIL` for your mail provider. For Gmail, use an App Password; do not use your regular account password.
-2. Keep the real `.env` file private. It is ignored by Git. In Cloudflare Workers settings, add the same names under **Settings → Variables and Secrets**; save `SMTP_PASS` as a secret. The deploy command must be `npx wrangler deploy` and the build command `npm run build`.
+1. Set `RESEND_API_KEY` as a runtime Secret on the production Worker. The configured test sender `onboarding@resend.dev` only works for the email address that owns the Resend account; verify a sending domain in Resend to send to other recipients or use a custom sender.
+2. Keep `.env` private. It is ignored by Git. Local SSR still uses the SMTP variables from `.env`; the production Worker uses the Resend API key.
 3. Run the local Node SSR server with `npm run build` followed by `npm run serve:ssr:constructoralp`.
 
-The API validates submitted data, limits request sizes, and throttles repeated requests per IP. SMTP credentials stay on the server and are never sent to the browser. Cloudflare Workers' in-memory throttle is per isolate and is best-effort; use a Cloudflare rate limiting binding if a shared production limit is needed.
+The API validates submitted data, limits request sizes, and throttles repeated requests per IP. Email credentials stay on the server and are never sent to the browser. Cloudflare Workers' in-memory throttle is per isolate and is best-effort; use a Cloudflare rate limiting binding if a shared production limit is needed.
 
 ## Additional Resources
 
